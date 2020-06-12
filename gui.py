@@ -111,7 +111,7 @@ button_preview.grid(row=9, column=0, columnspan=2, sticky='w')
 
 def execute():
     preview()
-    ascii_generator.print_ascii(img_output, var_width.get())
+    ascii_generator.print_ascii(img_output)
 
 
 button_execute = tk.Button(master=frame_left, width=25, text='Generate ASCII Image', **color_config,

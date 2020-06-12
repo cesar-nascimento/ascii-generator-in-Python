@@ -13,21 +13,11 @@ def resize(original: Image.Image, final_width=25):
     return final
 
 
-def print_ascii(output, width_res):
+def print_ascii(output):
     os.system('@echo off')
     os.system('cls')
-    c = 1
-    my_str = ''
-    for lista in output:
-        for nest in lista:
-
-            if c == width_res:
-                my_str += nest + '\n'
-                c = 1
-            else:
-                my_str += nest
-                c += 1
-    print(my_str)
+    final = '\n'.join(''.join(char for char in row.flat) for row in output)
+    print(final)
 
 
 def main(path, width, dither, qtized_palette, char_map):
@@ -66,5 +56,5 @@ if __name__ == '__main__':
     dithering = 0
 
     img_preview, img_output = main(file_path, width_resolution, dithering, quantized_palette, mapping)
-    print_ascii(img_output, width_resolution)
+    print_ascii(img_output)
     os.system('PAUSE')
