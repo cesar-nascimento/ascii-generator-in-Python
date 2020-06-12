@@ -16,6 +16,8 @@ def resize(original: Image.Image, final_width=25):
 def print_ascii(output):
     os.system('@echo off')
     os.system('cls')
+    lines, cols = output.shape
+    os.system(f'mode con:cols={cols} lines={lines}')
     final = '\n'.join(''.join(char for char in row.flat) for row in output)
     print(final)
 
