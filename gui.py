@@ -97,7 +97,7 @@ def preview():
 
     quantized_pal, mapp = palette_generator.generate_palette(*color_list)
     my_preview, img_output = ascii_generator.main(var_path.get(), var_width.get(), var_dithering.get(),
-                                                  quantized_pal, mapp)
+                                                  quantized_pal, mapp, resampling_options[f'{var_resample.get()}'])
 
     my_preview = unflat(my_preview)
 
@@ -106,7 +106,7 @@ def preview():
 
 
 button_preview = tk.Button(master=frame_left, width=25, text='Preview', **color_config, command=preview)
-button_preview.grid(row=9, column=0, columnspan=2, sticky='w')
+button_preview.grid(row=10, column=0, columnspan=2, sticky='w')
 
 
 def execute():
@@ -116,7 +116,7 @@ def execute():
 
 button_execute = tk.Button(master=frame_left, width=25, text='Generate ASCII Image', **color_config,
                            command=execute)
-button_execute.grid(row=10, column=0, columnspan=2, sticky='w')
+button_execute.grid(row=11, column=0, columnspan=2, sticky='w')
 
 
 # Checkboxes
@@ -174,8 +174,16 @@ canv_img = ImageTk.PhotoImage(img_preview)
 
 image_on_canvas = canvas_preview.create_image(300, 300, image=canv_img)
 
-# Execute
 
+# Option Menu
+resampling_options = {'Lanczos': Image.LANCZOS, 'Nearest Neighbor': Image.NEAREST}
+var_resample = tk.StringVar(value='Lanczos')
+menu = tk.OptionMenu(frame_left, var_resample, *resampling_options.keys())
+menu.config(width=23, **color_config, relief=tk.FLAT)
+menu.grid(row=9, column=0, columnspan=2)
+
+
+# Execute
 
 frame_file_path.grid(row=0, column=0, columnspan=2, sticky='nwe')
 frame_left.grid(row=1, column=0, sticky='nws')

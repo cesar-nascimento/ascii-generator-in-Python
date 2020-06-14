@@ -4,12 +4,12 @@ import os
 import palette_generator
 
 
-def resize(original: Image.Image, final_width=25):
+def resize(original: Image.Image, final_width=25, resample=Image.LANCZOS):
     # Each character is roughly 8 pixels wide and 16 pixels tall.
     # We squish the picture a little to counter that.
     factor = original.width / final_width
     final_height = int((original.height / factor) / 2)
-    final = original.resize((final_width, final_height), resample=Image.LANCZOS)
+    final = original.resize((final_width, final_height), resample=resample)
     return final
 
 
@@ -22,10 +22,10 @@ def print_ascii(output):
     print(final)
 
 
-def main(path, width, dither, qtized_palette, char_map):
+def main(path, width, dither, qtized_palette, char_map, resample_method=Image.LANCZOS):
     my_image = Image.open(path)
 
-    small_image = resize(my_image, width)
+    small_image = resize(my_image, width, resample_method)
     small_image_rgb = small_image.convert(mode='RGB')
 
     # Replace the RGB values of the pixels with an array from 0 to n number of colors
@@ -51,12 +51,10 @@ if __name__ == '__main__':
         'black': [0, 0, 0, ' ']
     }
 
-    quantized_palette, mapping = palette_generator.generate_palette(*color_dict.values())
-
+    quantized_palette, mapping = palette_generator.generate_palette(color_dict.values())
     file_path = 'to_convert/b2e40b9b38a7c9d1c9c2e2210e9bcf2e.png'
     width_resolution = 100
     dithering = 0
-
     img_preview, img_output = main(file_path, width_resolution, dithering, quantized_palette, mapping)
     print_ascii(img_output)
     os.system('PAUSE')

@@ -36,7 +36,7 @@ def char_gradient(color):
     return pixel_character_grad
 
 
-def generate_palette(*color_list):
+def generate_palette(color_list):
 
     # Every color has a range equal to the number of chars on the list of ASCII characters.
     # Except for black, which is range 1, because it's empty -> (' ').
