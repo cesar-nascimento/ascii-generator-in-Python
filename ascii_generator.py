@@ -51,7 +51,7 @@ if __name__ == '__main__':
         'black': [0, 0, 0, ' ']
     }
 
-    quantized_palette, mapping = palette_generator.generate_palette(color_dict.values())
+    quantized_palette, mapping = palette_generator.generate_palette(*color_dict.values())
     file_path = 'to_convert/b2e40b9b38a7c9d1c9c2e2210e9bcf2e.png'
     width_resolution = 100
     dithering = 0
