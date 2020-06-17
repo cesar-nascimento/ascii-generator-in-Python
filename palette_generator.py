@@ -9,54 +9,58 @@ graded_chars = ['@', '%', '#', '*', '+', '=', '-', ':', '.']
 grad_range = len(graded_chars)
 
 
-def rgb_gradient(color):
-    """Generate, RGB gradient list.
-    Each color descends from 255 to almost 0."""
-    grad = []
-    for i in range(grad_range):
+def make_rgb_palette(colors):
+    # Generate an RGB palette
+    my_palette = np.zeros(shape=[1, 768], dtype=np.uint8)
 
-        r, g, b = 0, 0, 0
-        if color[0] > 0:
-            r = color[0] - i * (255 // grad_range)
-        if color[1] > 0:
-            g = color[1] - i * (255 // grad_range)
-        if color[2] > 0:
-            b = color[2] - i * (255 // grad_range)
-        grad.append([r, g, b])
-    return grad
+    for x in range(len(colors)):
+        color = colors[x][0]
+        step = 128 // grad_range
+        descend = [255 - i * step for i in range(grad_range)]
+        ascend = [0 + i * step for i in range(grad_range)]
+
+        if color == [0, 0, 0]:
+            continue
+
+        if color == [255, 255, 255]:
+            step = 256 // grad_range
+            descend = [255 - i * step for i in range(grad_range)]
+
+        for i in range(3):
+            index = x * grad_range * 3 + i
+            value = color[i]
+            if value == 255:
+                my_palette[0, index: index + 3 * grad_range: 3] = descend
+            elif value == 0:
+                my_palette[0, index: index + 3 * grad_range: 3] = ascend
+            else:
+                raise Exception('Input RGB values must be either 255 or 0')
+    return my_palette
 
 
-def char_gradient(color):
-    # We need a list of len(graded_chars) filled with empty ' ' for the black color.
-    if color[3] == ' ':
-        return list(' ' * grad_range)
-    pixel_character_grad = []
-    for char in graded_chars:
-        pixel_character_grad.append(color[3] + char)
-    return pixel_character_grad
+def make_char_palette(colors):
+    # uses the same range of 768 as the rgb palette, ' ' is empty and will be mapped to the black color
+    my_palette = np.array([' ' for _ in range(768)], dtype='O')
+
+    for x in range(len(colors)):
+        color = colors[x][1]
+        if color == ' ':
+            continue
+        else:
+            char_grad = np.array([color + char for char in graded_chars], dtype=my_palette.dtype)
+            index = x * grad_range
+            my_palette[index: index + grad_range] = char_grad
+
+    return my_palette
 
 
 def generate_palette(*color_list):
 
-    # Every color has a range equal to the number of chars on the list of ASCII characters.
-    # Except for black, which is range 1, because it's empty -> (' ').
-    # this calculates how many colors the final image will have.
-    color_range = ((len(color_list) - 1) * grad_range) + 1
+    rgb_palette = make_rgb_palette(color_list)
 
-    color_matrix = list(map(rgb_gradient, color_list))
-    color_array = np.array(color_matrix, dtype='uint8')
+    palette_image = Image.new('P', (1, 1))  # the palette must be associated with an image
+    palette_image.putpalette(rgb_palette)
 
-    char_matrix = list(map(char_gradient, color_list))
-    char_array = np.array(char_matrix, dtype='unicode_')
+    char_palette = make_char_palette(color_list)
 
-    palette = Image.fromarray(color_array, mode='RGB')
-    quantized_palette = palette.quantize(colors=color_range)
-
-    numpy_array_palette = np.asarray(quantized_palette)
-
-    mapping = np.zeros(numpy_array_palette.max()+1, dtype=char_array.dtype)
-
-    # "mapping" is like a palette but instead of using color it uses
-    # a combination of ANSI codes for each color combined with ASCII characters
-    mapping[numpy_array_palette] = [char_array]
-    return quantized_palette, mapping
+    return palette_image, char_palette

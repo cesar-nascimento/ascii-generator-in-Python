@@ -11,14 +11,14 @@ var_width = tk.IntVar(value=100)
 var_dithering = tk.IntVar(value=0)
 
 color_dict = {
-        0: [255, 0, 0, '\033[91m'],
-        1: [0, 255, 0, '\033[92m'],
-        2: [255, 255, 0, '\033[93m'],
-        3: [0, 0, 255, '\033[94m'],
-        4: [255, 0, 255, '\033[95m'],
-        5: [0, 255, 255, '\033[96m'],
-        6: [255, 255, 255, '\033[97m'],
-        7: [0, 0, 0, ' ']
+        0: [[255, 0, 0], '\033[91m'],
+        1: [[0, 255, 0], '\033[92m'],
+        2: [[255, 255, 0], '\033[93m'],
+        3: [[0, 0, 255], '\033[94m'],
+        4: [[255, 0, 255], '\033[95m'],
+        5: [[0, 255, 255], '\033[96m'],
+        6: [[255, 255, 255], '\033[97m'],
+        7: [[0, 0, 0], ' ']
     }
 
 # Settings shortcuts
@@ -89,7 +89,7 @@ def preview():
     global img_preview
     global img_output
     global canv_img
-    black = [0, 0, 0, ' ']
+    black = [[0, 0, 0], ' ']
     colors = [var_red.get(), var_green.get(), var_yellow.get(), var_blue.get(),
               var_magenta.get(), var_cyan.get(), var_white.get(), black]
 
