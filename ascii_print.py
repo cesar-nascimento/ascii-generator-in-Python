@@ -15,10 +15,13 @@ color_dict = {
     }
 
 
-my_image = AsciiImage('example.jpg', 200, 0, Image.LANCZOS, color_dict.values())
+a = AsciiImage('example.jpg', 100, 0, Image.LANCZOS, color_dict.values())
+a.get_preview(10).show()
+b = a.ascii_string
 
+os.system('@echo off')
 os.system('cls')
 
-os.system(f'mode con:cols={my_image.columns} lines={my_image.lines}')
-print(my_image.ascii_string)
-os.system('PAUSE')
+os.system(f'mode con:cols={a.columns} lines={a.lines}')
+print(b)
+
