@@ -1,7 +1,5 @@
 from PIL import Image
 import numpy as np
-from colorama import init
-init()
 
 
 # From boldest to palest
