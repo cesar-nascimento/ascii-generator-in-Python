@@ -1,8 +1,9 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
-import ascii_generator
-import palette_generator
+from ascii import AsciiImage, Color
+import os
+
 
 window = tk.Tk()
 
@@ -11,14 +12,14 @@ var_width = tk.IntVar(value=100)
 var_dithering = tk.IntVar(value=0)
 
 color_dict = {
-        0: [[255, 0, 0], '\033[91m'],
-        1: [[0, 255, 0], '\033[92m'],
-        2: [[255, 255, 0], '\033[93m'],
-        3: [[0, 0, 255], '\033[94m'],
-        4: [[255, 0, 255], '\033[95m'],
-        5: [[0, 255, 255], '\033[96m'],
-        6: [[255, 255, 255], '\033[97m'],
-        7: [[0, 0, 0], ' ']
+    0: Color((255, 0, 0), '\033[91m'),
+    1: Color((0, 255, 0), '\033[92m'),
+    2: Color((255, 255, 0), '\033[93m'),
+    3: Color((0, 0, 255), '\033[94m'),
+    4: Color((255, 0, 255), '\033[95m'),
+    5: Color((0, 255, 255), '\033[96m'),
+    6: Color((255, 255, 255), '\033[97m'),
+    7: Color((0, 0, 0), ' ')
     }
 
 # Settings shortcuts
@@ -78,30 +79,19 @@ button_file_path = tk.Button(master=frame_file_path, relief='flat', borderwidth=
 button_file_path.pack(side=tk.RIGHT)
 
 
-def unflat(original):
-    factor = (original.width / 600)
-    final_height = int((original.height / factor * 2))
-    final = original.resize((600, final_height), resample=Image.LANCZOS)
-    return final
-
-
 def preview():
-    global img_preview
-    global img_output
     global canv_img
-    black = [[0, 0, 0], ' ']
+    global ascii_image
+    black = color_dict[7]
     colors = [var_red.get(), var_green.get(), var_yellow.get(), var_blue.get(),
               var_magenta.get(), var_cyan.get(), var_white.get(), black]
 
-    color_list = [color_dict[i] for i in range(len(colors)) if colors[i] != 0]
+    color_list = ([color_dict[i] for i in range(len(colors)) if colors[i] != 0])
 
-    quantized_pal, mapp = palette_generator.generate_palette(*color_list)
-    my_preview, img_output = ascii_generator.main(var_path.get(), var_width.get(), var_dithering.get(),
-                                                  quantized_pal, mapp, resampling_options[f'{var_resample.get()}'])
+    ascii_image = AsciiImage(var_path.get(), var_width.get(), var_dithering.get(),
+                             resampling_options[f'{var_resample.get()}'], color_list)
 
-    my_preview = unflat(my_preview)
-
-    canv_img = ImageTk.PhotoImage(my_preview)
+    canv_img = ImageTk.PhotoImage(ascii_image.get_preview(600))
     canvas_preview.itemconfig(image_on_canvas, image=canv_img)
 
 
@@ -110,8 +100,13 @@ button_preview.grid(row=10, column=0, columnspan=2, sticky='w')
 
 
 def execute():
+    global ascii_image
     preview()
-    ascii_generator.print_ascii(img_output)
+
+    os.system('cls')
+
+    os.system(f'mode con:cols={ascii_image.columns} lines={ascii_image.lines}')
+    print(ascii_image.ascii_string)
 
 
 button_execute = tk.Button(master=frame_left, width=25, text='Generate ASCII Image', **color_config,
@@ -160,19 +155,9 @@ ch_white.grid(row=7, column=0, sticky='w')
 
 
 # Right Box
-quantized_palette, mapping = palette_generator.generate_palette(*color_dict.values())
-img_preview, img_output = ascii_generator.main(var_path.get(), var_width.get(), var_dithering.get(),
-                                               quantized_palette, mapping)
-
-img_preview = unflat(img_preview)
 
 canvas_preview = tk.Canvas(master=frame_right, width=600, height=600)
 canvas_preview.pack(expand=1, fill='both')
-
-
-canv_img = ImageTk.PhotoImage(img_preview)
-
-image_on_canvas = canvas_preview.create_image(300, 300, image=canv_img)
 
 
 # Option Menu
@@ -184,6 +169,11 @@ menu.grid(row=9, column=0, columnspan=2)
 
 
 # Execute
+
+ascii_image = AsciiImage(var_path.get(), var_width.get(), var_dithering.get(),
+                         resampling_options[f'{var_resample.get()}'], color_dict.values())
+canv_img = ImageTk.PhotoImage(ascii_image.get_preview(600))
+image_on_canvas = canvas_preview.create_image(300, 300, image=canv_img)
 
 frame_file_path.grid(row=0, column=0, columnspan=2, sticky='nwe')
 frame_left.grid(row=1, column=0, sticky='nws')
