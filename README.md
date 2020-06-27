@@ -6,8 +6,6 @@ An easy way to create colorful ASCII art directly on the console.
 ## Installation
 Clone this repo in your machine, then install the following libraries:
 
-[Colorama](https://pypi.org/project/colorama/)
-
 [Numpy](https://pypi.org/project/numpy/)
 
 [Pillow](https://pypi.org/project/Pillow/)
