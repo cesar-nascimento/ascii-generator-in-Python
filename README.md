@@ -1,7 +1,7 @@
 # ASCII-Generator-in-Python
 An easy way to create colorful ASCII art directly on the console.
 
-![Example](https://i.imgur.com/pgV5vLr.png)
+![Example](https://i.imgur.com/mon0pFv.png)
 
 ## Installation
 Clone this repo in your machine, then install the following libraries:
