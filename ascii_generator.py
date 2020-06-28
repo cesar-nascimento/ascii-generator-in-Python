@@ -18,9 +18,10 @@ color_dict = {
 my_image = AsciiImage('example.jpg', 200, 0, Image.LANCZOS, color_dict.values())
 
 if os.name == 'nt':
-    os.system('cls')
     os.system(f'mode con:cols={my_image.columns} lines={my_image.lines}')
+    os.system('cls')
 else:
+    os.system(f'stty columns {my_image.columns}')
     os.system('clear')
 
 print(my_image.ascii_string)

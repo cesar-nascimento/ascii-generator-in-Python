@@ -104,9 +104,10 @@ def execute():
     preview()
 
     if os.name == 'nt':
-        os.system('cls')
         os.system(f'mode con:cols={ascii_image.columns} lines={ascii_image.lines}')
+        os.system('cls')
     else:
+        os.system(f'stty columns {ascii_image.columns}')
         os.system('clear')
 
     print(ascii_image.ascii_string)
