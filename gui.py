@@ -103,9 +103,12 @@ def execute():
     global ascii_image
     preview()
 
-    os.system('cls')
+    if os.name == 'nt':
+        os.system('cls')
+        os.system(f'mode con:cols={ascii_image.columns} lines={ascii_image.lines}')
+    else:
+        os.system('clear')
 
-    os.system(f'mode con:cols={ascii_image.columns} lines={ascii_image.lines}')
     print(ascii_image.ascii_string)
 
 

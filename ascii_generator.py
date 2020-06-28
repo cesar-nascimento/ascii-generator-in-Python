@@ -17,8 +17,11 @@ color_dict = {
 
 my_image = AsciiImage('example.jpg', 200, 0, Image.LANCZOS, color_dict.values())
 
-os.system('cls')
+if os.name == 'nt':
+    os.system('cls')
+    os.system(f'mode con:cols={my_image.columns} lines={my_image.lines}')
+else:
+    os.system('clear')
 
-os.system(f'mode con:cols={my_image.columns} lines={my_image.lines}')
 print(my_image.ascii_string)
 os.system('PAUSE')
